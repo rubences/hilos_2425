@@ -1,33 +1,29 @@
 import java.time.Duration;
 import java.time.Instant;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-public class ThreadRunnable {
+public class ExecutorServiceRunnable {
 
     private static final Instant INICIO = Instant.now();
 
     public static void main(String[] args) {
 
-        Runnable tarea = () -> {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        Runnable tarea= ()->{
+            Log("Inicio de la tarea");
             try {
-                Log("Empieza la tarea");
-                Thread.sleep(5000);
-                Log("Termina la tarea");
+                TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            Log("Finaliza la tarea");
         };
 
-        Thread hilo = new Thread(tarea);
-
-        hilo.start();
-
-        try {
-            Log("Se empieza a esperar al hilo");
-            hilo.join(3000);
-            Log("Se termina de esperar al hilo");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        executor.submit(tarea);
+        executor.shutdown();
     }
 
     private static void Log(Object mensaje) {
